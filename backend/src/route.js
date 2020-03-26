@@ -13,4 +13,5 @@ module.exports =  (app)=>{
     })
 
     app.post('/myamal',MyAmal.saveAmal)
+    app.post('/showamal',MyAmal.showAmal)
 }

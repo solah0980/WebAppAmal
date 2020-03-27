@@ -1,101 +1,109 @@
 const con = require('../config/config')
 const dateFormat = require('dateformat');
 const now = new Date();
-const da =dateFormat(now, "mediumDate");
+const da = dateFormat(now, "mediumDate");
+const name1 = ["มัฆริบ", "อิชาอฺ", "ศุบฮฺ", "ซุฮฺริ", "อัศรี"]
+const name2 = ["ละหมาดซุนนะฮฺ", "ละหมาดฏูฮา", "ละหมาดในยาค่ำคืน", ]
+const name3 = ["อ่านอัลกุรอาน", "อ่านอัซการ", "ศอดาเกาะฮฺ", "ถือศีลอด", "ขอดุอาฮฺ", "ศอดาเกาะฮฺ"]
+let dataSuccess = [] //ตัวแปรไว้เก็บข้อมูลที่ถูกประมวลผลเสร็จแล้ว
 
-function addData(id,pray,praysunnah,ebadat){
-    console.log(pray)
-    for(let i = 0; i<5; i++){
-       con.query(`INSERT INTO pray(amalId,name,point) VALUES("${id}","${pray[i].name}",${parseInt(pray[i].point)})`,(err,result)=>{
-       }) 
+//เพิ่มข้อมูล ละหมาด,ละหมาดซุนนะ,อีบาดัร
+function addData(id, pray, praysunnah, ebadat) {
+    for (let i = 0; i < 5; i++) {
+        con.query(`INSERT INTO pray(amalId,name,point) VALUES("${id}","${pray[i].name}",${parseInt(pray[i].point)})`, (err, result) => {})
     }
-    for(let i = 0; i<3; i++){
+    for (let i = 0; i < 3; i++) {
         con.query(`INSERT INTO praysunnah(amalId,name,point) VALUES("${id}","${praysunnah[i].name}",
-             ${parseInt(praysunnah[i].point)})`,(err,result)=>{
-        }) 
-     }
-     for(let i = 0; i<6; i++){
-        con.query(`INSERT INTO ebadat(amalId,name,point) VALUES("${id}","${ebadat[i].name}",
-             ${parseInt(ebadat[i].point)})`,(err,result)=>{
-        }) 
-     }
-    
-}
-
-//คำนวณเปอร์เซนการทำอีบาดัร
-function calData(data,sum){
-    let pray=0
-    let praysunnah =0
-    let ebadat = 0
-    data = JSON.parse(JSON.stringify(data)) 
-    data[0].forEach((r)=>{
-        pray=pray+r.point
-    })
-    data[1].forEach((r)=>{
-        praysunnah=praysunnah+r.point
-    })
-    data[2].forEach((r)=>{
-        ebadat=ebadat+r.point
-    })
-    console.log(pray,praysunnah,ebadat)
-    return {
-        pray:(pray*100)/sum,
-        praysunnah:(praysunnah*100)/sum,
-        ebadat:(ebadat*100)/sum
+             ${parseInt(praysunnah[i].point)})`, (err, result) => {})
     }
+    for (let i = 0; i < 6; i++) {
+        con.query(`INSERT INTO ebadat(amalId,name,point) VALUES("${id}","${ebadat[i].name}",
+             ${parseInt(ebadat[i].point)})`, (err, result) => {})
+    }
+
 }
 
-module.exports={
+//คำนวนเปอร์เซ็นการ ละหมาด,ละหมาดซุนนะฮ์,อีบาดัร
+function CalculateData(name, data, max) {
+    let sum = 0
+    name.forEach((n) => { //นำตัวแปรที่ได้ set ไว้ นำไปวนลูปหาค่าที่ตรงกันในข้อมูล data
+        let d = {}
+        data.forEach((n1) => {
+            if (n1.name === n) {
+                sum = sum + n1.point //ผลรวมคะแนนของแต่ละวักตู
+            }
+        })
+        d = {
+            [n]: sum * 100 / max //หาเปอร์เซนต์การละหมาดในแต่ละวักตู
+        }
+        dataSuccess.push(d) //เพิ่มค่าที่หาเปอร์เซ็นไปยังตัวแปร dataSuccess เพื่อส่งไปให้ user ต่อไป
+    })
 
-    //บันทึกอามัล
-   async saveAmal(req,res){
-        try{
-            con.query(`INSERT INTO myamal(studentId,date) VALUES("${req.body.stdId}","${da}")`,(err,result)=>{
-                 addData(result.insertId,req.body.pray,req.body.praysunnah,req.body.ebadat)
-                 res.send("Success")
+}
+
+//query ข้อมูลจากฐานข้อมูล
+function queryData(name, table, sum, type, res, f, l) {
+    //มีอยู่สองเงื่อนไข ถ้า type == 1 คือมีข้อมูลเดี่ยวทำเงื่อนไขแรก //ถ้า type ==2 มีข้อมูลหลายแถวทำแถวที่2
+    if (type == 0) {
+        con.query(`SELECT name,point FROM ${table} WHERE amalId = ${f.amalId}`, (err, result) => {
+            CalculateData(name, JSON.parse(JSON.stringify(result)), sum)
+            res.send(dataSuccess)
+            dataSuccess = []
+        })
+    } else if (type == 1) {
+        con.query(`SELECT name,point FROM ${table} WHERE amalId BETWEEN ${f.amalId} AND ${l.amalId}`, (err, result) => {
+            CalculateData(name, JSON.parse(JSON.stringify(result)), sum)
+            res.send(dataSuccess)
+            dataSuccess = []
+        })
+    }
+
+}
+
+module.exports = {
+
+    //บันทึกอามัลลงในฐานข้อมูล
+    async saveAmal(req, res) {
+        try {
+            con.query(`INSERT INTO myamal(studentId,date) VALUES("${req.body.stdId}","${da}")`, (err, result) => {
+                addData(result.insertId, req.body.pray, req.body.praysunnah, req.body.ebadat)
+                res.send("Success")
             })
-        }catch(err){
+        } catch (err) {
             console.log(err)
         }
     },
 
-    //วิเคราะห์ข้อมูลการทำอีบาดัร
-    showAmal(req,res){
-        try{
-            con.query(`SELECT amalId FROM myamal WHERE studentId = ${req.body.stdId} AND date LIKE "${req.body.month}%"`,(err,result)=>{
-                let a = JSON.parse(JSON.stringify(result))
-                let sum = 0 
-                a.forEach((r)=>{
-                    sum=sum+1
-                })
-                sum=sum*70
-                let f = result.shift()
-                let l = result.pop()
-                let data = []
-                let id = null
-                if(result === undefined){
-                    return console.log('ไม่เจอ')
-                }
-                
-                con.query(`SELECT point FROM pray WHERE amalId BETWEEN ${f.amalId} AND ${l.amalId}`,(err,result)=>{
-                   data.push(result)
-                    con.query(`SELECT point FROM praysunnah WHERE amalId BETWEEN ${f.amalId} AND ${l.amalId}`,(err,result)=>{
-                        data.push(result)
-                        con.query(`SELECT point FROM ebadat WHERE amalId BETWEEN ${f.amalId} AND ${l.amalId}`,(err,result)=>{
-                            data.push(result)
-                            let {pray,praysunnah,ebadat}=calData(data,sum)
-                            let d = {
-                                pray:pray,
-                                praysunnah:praysunnah,
-                                ebadat:ebadat
-                            }
-                            console.log(d)
-                            res.send(d)
-                        })
+    //ส่งข้อมูลอีบาดัรไปให้ user
+    async showAmal(req, res) {
+        try {
+            con.query(`SELECT amalId FROM myamal WHERE studentId = ${req.body.stdId} AND date LIKE "${req.body.month}%"`, (err, result) => {
+
+                if (Object.keys(result).length === 0) {
+                    return res.send({
+                        error: "ไม่เจอข้อมูล"
                     })
-                })
+                }
+                let allValues = JSON.parse(JSON.stringify(result))
+                let sum = Object.keys(allValues).length //เก็บจำนวนข้อมูลในแต่ละเดือน
+                sum = sum * 70 //จำนวนคะแนนเต็มทั้งหมด         
+
+                //เงื่อนไขในการ query ข้อมูล หากมีข้อมูลเดียวทำเงื่อนไข1 หากมีหลายข้อมูลทำเงื่อนไขที่2
+                if (Object.keys(allValues).length === 1) {
+                    let f = result.pop()
+                    if (req.body.type == 0) queryData(name1, "pray", sum, 0, res, f)
+                    else if (req.body.type == 1) queryData(name2, "praysunnah", sum, 0, res, f)
+                    else if (req.body.type == 2) queryData(name3, "ebadat", sum, 0, res, f)
+                } else {
+                    let f = result.shift()
+                    let l = result.pop()
+                    if (req.body.type == 0) queryData(name1, "pray", sum, 1, res, f, l)
+                    else if (req.body.type == 1) queryData(name2, "praysunnah", sum, 1, res, f, l)
+                    else if (req.body.type == 2) queryData(name3, "ebadat", sum, 1, res, f, l)
+                }
+
             })
-        }catch(err){
+        } catch (err) {
             console.log(err)
         }
     }

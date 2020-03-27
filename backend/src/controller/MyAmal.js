@@ -8,19 +8,28 @@ const name3 = ["อ่านอัลกุรอาน", "อ่านอัซ
 let dataSuccess = [] //ตัวแปรไว้เก็บข้อมูลที่ถูกประมวลผลเสร็จแล้ว
 
 //เพิ่มข้อมูล ละหมาด,ละหมาดซุนนะ,อีบาดัร
-function addData(id, pray, praysunnah, ebadat) {
-    for (let i = 0; i < 5; i++) {
-        con.query(`INSERT INTO pray(amalId,name,point) VALUES("${id}","${pray[i].name}",${parseInt(pray[i].point)})`, (err, result) => {})
-    }
-    for (let i = 0; i < 3; i++) {
+async function addData(id, pray, praysunnah, ebadat) {
+    let p1 = new Promise((resove,reject)=>{
+        for (let i = 0; i < 5; i++) {
+             con.query(`INSERT INTO pray(amalId,name,point) VALUES("${id}","${pray[i].name}",${parseInt(pray[i].point)})`, (err, result) => {})
+        } 
+    },1000)
+    
+    let p2 = new Promise((resove,reject)=>{
+         for (let i = 0; i < 3; i++) {
         con.query(`INSERT INTO praysunnah(amalId,name,point) VALUES("${id}","${praysunnah[i].name}",
              ${parseInt(praysunnah[i].point)})`, (err, result) => {})
     }
-    for (let i = 0; i < 6; i++) {
-        con.query(`INSERT INTO ebadat(amalId,name,point) VALUES("${id}","${ebadat[i].name}",
-             ${parseInt(ebadat[i].point)})`, (err, result) => {})
-    }
+    },1000)
 
+    let p3 =new Promise((resove,reject)=>{
+       for (let i = 0; i < 6; i++) {
+           con.query(`INSERT INTO ebadat(amalId,name,point) VALUES("${id}","${ebadat[i].name}",
+             ${parseInt(ebadat[i].point)})`, (err, result) => {})
+       }
+   },1000)
+    
+   p1.then(()=>p2.then(()=>p3)).catch((err)=>console.log(err))
 }
 
 //คำนวนเปอร์เซ็นการ ละหมาด,ละหมาดซุนนะฮ์,อีบาดัร

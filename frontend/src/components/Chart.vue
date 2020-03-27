@@ -1,28 +1,43 @@
 <template>
   <div>
     <div class="chart">
-      <canvas id="myChart" width="400" height="400"></canvas>
+      <p class="mt-3 text-info">เต็ม 100 %</p>
+      <canvas class="mt-3" id="myChart" width="400" height="400"></canvas>
+      <p class="mt-4 text-primary">จำนวนการประเมินของเดือนนี้ {{th}} ครั้ง</p>
     </div>
   </div>
 </template>
 <script>
 import Chart from "chart.js";
 export default {
-  props:["data","maxPoint"],
+  props:["data","maxPoint","th"],
+  data(){
+    return{
+      name:[],
+      per:[],
+      color:[]
+    }
+  },
+  created() {
+    this.data.forEach((d)=>{
+      this.name.push(`${d.name} ได้ ${d.data.toFixed(2)} %`)
+      this.per.push(d.data.toFixed(2))
+    })
+    this.name.forEach((d)=>{
+      this.color.push(`rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.8)`)
+    })
+  },
   mounted() {
     var ctx = document.getElementById("myChart");
     var myChart = new Chart(ctx, {
-      type: "bar",
+      type: "pie",
       data: {
-        labels: ["Red", "Blue", "Red", "Blue", "Red", "Blue"],
+        labels: this.name,
         datasets: [
           {
             label: ["เปอร์เซนการทำอีบาดัรประจำเดือน", "เต็ม 100 %"],
-            data: [80, 19, 80, 19, 80, 19],
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.8)",
-              "rgba(54, 162, 235, 0.8)"
-            ]
+            data: this.per,
+            backgroundColor: this.color
           }
         ]
       },
@@ -35,6 +50,9 @@ export default {
 </script>
 <style scoped>
 .chart {
-  width: 500px;
+  width: 300px;
+}
+p{
+  text-align: center;
 }
 </style>

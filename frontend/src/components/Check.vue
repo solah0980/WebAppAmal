@@ -11,7 +11,7 @@
               <label class="head-input col-2 col-md-3">มัฆริบ</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -24,7 +24,7 @@
               <label class="head-input col-2 col-md-3">อิชาอฺ</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -37,7 +37,7 @@
               <label class="head-input col-2 col-md-3">ศุบฮฺ</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -50,7 +50,7 @@
               <label class="head-input col-2 col-md-3">ซุฮฺรี</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -63,7 +63,7 @@
               <label class="head-input col-2 col-md-3">อัศรี</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -81,7 +81,7 @@
               <label class="head-input col-6 col-md-3">ละหมาดซุนนะฮฺก่อน-หลัง(12 ร็อกอะฮฺ)</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-2"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -94,7 +94,7 @@
               <label class="head-input col-2 col-md-3">ฏูฮา</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -107,7 +107,7 @@
               <label class="head-input col-2 col-md-3">ละหมาดในยาค่ำคืน</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -125,7 +125,7 @@
               <label class="head-input col-4 col-md-4">อ่านอัลกุรอาน</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -138,7 +138,7 @@
               <label class="head-input col-4 col-md-4">อ่านอัซการ</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -151,7 +151,7 @@
               <label class="head-input col-4 col-md-4">ศอดาเกาะฮฺ</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -164,7 +164,7 @@
               <label class="head-input col-4 col-md-4">ถือศีลอด</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -177,7 +177,7 @@
               <label class="head-input col-4 col-md-4">ขอดุอาฮฺ</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"
@@ -190,7 +190,7 @@
               <label class="head-input col-4 col-md-4">ทำฮาลาเกาะฮฺ</label>
               <input
                 type="number"
-                max="10"
+                max="70"
                 class="form-control col-4"
                 id="exampleInputEmail1"
                 aria-describedby="emailHelp"

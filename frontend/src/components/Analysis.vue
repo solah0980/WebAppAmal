@@ -28,8 +28,8 @@
           </div>
         </div>
       </form>
-      <div class="row justify-content-md-center">
-        <Chart v-if="dataPerShow" :data="dataPer" :maxPoint="maxPoint"></Chart>
+      <div class="row justify-content-center chart">
+        <Chart v-if="statusShow" :data="dataAll" :th="th" ></Chart>
       </div>
     </div>
   </div>
@@ -46,13 +46,10 @@ export default {
       month1: null,
       month2: null,
       type: null,
-      dataPer: [],
-      maxPoint: null,
-      dataPerShow: false,
-      name1: ["มัฆริบ", "อิชาอฺ", "ศุบฮฺ", "ซุฮฺริ", "อัศรี"],
-      name2: ["ละหมาดซุนนะฮฺ", "ละหมาดฏูฮา", "ละหมาดในยาค่ำคืน",],
-      name3: ["อ่านอัลกุรอาน", "อ่านอัซการ", "ศอดาเกาะฮฺ","ถือศีลอด", "ขอดุอาฮฺ", "ศอดาเกาะฮฺ",],
-      error:null
+      dataAll:null,
+      statusShow:false,
+      error:null,
+      th:null
     };
   },
   components: {
@@ -62,45 +59,12 @@ export default {
   computed: {
     ...mapState(["user"])
   },
-  methods: {
-    calculateData(d) {
-      this.dataPer=[]
-      if (this.type == "1") {
-        this.name1.forEach(r => {
-          let rData = d.data.filter(a => {
-            return a.name === r;
-          });
-          this.dataPer.push(rData);
-        });
-        this.maxPoint = d.maxPoint;
-        this.dataPerShow = true;
-      }else if(this.type == "2"){
-        this.name2.forEach(r => {
-          let rData = d.data.filter(a => {
-            return a.name === r;
-          });
-          this.dataPer.push(rData);
-        });
-        this.maxPoint = d.maxPoint;
-        this.dataPerShow = true;
-      }else if(this.type == "3"){
-        this.name3.forEach(r => {
-          let rData = d.data.filter(a => {
-            return a.name === r;
-          });
-          this.dataPer.push(rData);
-        });
-        this.maxPoint = d.maxPoint;
-        this.dataPerShow = true;
-      }
-    }
-  },
   watch: {
     month1: function(value) {
       this.month2 = this.month1;
     },
     type: function() {
-      this.dataPerShow=false
+      this.statusShow=false
       this.$router.push({
         name: "analysis",
         query: { stdId: this.user.stdId, month: this.month2, type: this.type }
@@ -116,10 +80,10 @@ export default {
               this.error==null
               })
           }else{
-            console.log(r)
-            //this.calculateData(r.data);
+            this.th = r.data.pop()
+            this.dataAll=r.data
+            this.statusShow=true
           }
-          
         });
     }, 2000)
   }
@@ -132,5 +96,10 @@ export default {
 }
 .h-form {
   text-align: center;
+}
+@media screen and (max-width: 576px) {
+  .chart{
+    margin: 0 auto;
+  }
 }
 </style>

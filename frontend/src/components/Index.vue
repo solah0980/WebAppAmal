@@ -3,12 +3,12 @@
         <Navbar/>
         <div class="container">
             <h2 class="mt-4 text-dark">{{user.name}} {{user.lastname}} ชั้นมัธยมศึกษาปีที่ {{user.stdclass}}</h2>
-            <div class="jumbotron mt-5" >
+            <div class="jumbotron mt-5" @click="navigateTo('/check')">
                 <div class="row">
-                    <h1 class="lead-card col-12" @click="navigateTo('/check')">เช็คอามัลตนเองประจำสัปดาห์</h1>
+                    <h1 class="lead-card col-12" >เช็คอามัลตนเองประจำสัปดาห์</h1>
                 </div>
             </div>
-            <div class="jumbotron mt-5" >
+            <div class="jumbotron mt-5" @click="navigateTo('/analysis')">
                 <div class="row">
                     <h1 class="lead-card col-12">ประเมินอามัลตนเอง</h1>
                 </div>

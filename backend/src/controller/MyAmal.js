@@ -25,16 +25,18 @@ function addData(id, pray, praysunnah, ebadat) {
 
 //คำนวนเปอร์เซ็นการ ละหมาด,ละหมาดซุนนะฮ์,อีบาดัร
 function CalculateData(name, data, max) {
-    let sum = 0
+    let sum = null
     name.forEach((n) => { //นำตัวแปรที่ได้ set ไว้ นำไปวนลูปหาค่าที่ตรงกันในข้อมูล data
         let d = {}
+        sum=0
         data.forEach((n1) => {
             if (n1.name === n) {
                 sum = sum + n1.point //ผลรวมคะแนนของแต่ละวักตู
             }
         })
         d = {
-            [n]: sum * 100 / max //หาเปอร์เซนต์การละหมาดในแต่ละวักตู
+            data: sum * 100 / max, //หาเปอร์เซนต์การละหมาดในแต่ละวักตู
+            name: n
         }
         dataSuccess.push(d) //เพิ่มค่าที่หาเปอร์เซ็นไปยังตัวแปร dataSuccess เพื่อส่งไปให้ user ต่อไป
     })
@@ -42,17 +44,19 @@ function CalculateData(name, data, max) {
 }
 
 //query ข้อมูลจากฐานข้อมูล
-function queryData(name, table, sum, type, res, f, l) {
+function queryData(name, table, sum, type, res,th, f, l) {
     //มีอยู่สองเงื่อนไข ถ้า type == 1 คือมีข้อมูลเดี่ยวทำเงื่อนไขแรก //ถ้า type ==2 มีข้อมูลหลายแถวทำแถวที่2
     if (type == 0) {
         con.query(`SELECT name,point FROM ${table} WHERE amalId = ${f.amalId}`, (err, result) => {
             CalculateData(name, JSON.parse(JSON.stringify(result)), sum)
+            dataSuccess.push(th)
             res.send(dataSuccess)
             dataSuccess = []
         })
     } else if (type == 1) {
         con.query(`SELECT name,point FROM ${table} WHERE amalId BETWEEN ${f.amalId} AND ${l.amalId}`, (err, result) => {
             CalculateData(name, JSON.parse(JSON.stringify(result)), sum)
+            dataSuccess.push(th)
             res.send(dataSuccess)
             dataSuccess = []
         })
@@ -85,21 +89,22 @@ module.exports = {
                     })
                 }
                 let allValues = JSON.parse(JSON.stringify(result))
+                let th = Object.keys(allValues).length  //จำนวนการทำอีบาดัร
                 let sum = Object.keys(allValues).length //เก็บจำนวนข้อมูลในแต่ละเดือน
                 sum = sum * 70 //จำนวนคะแนนเต็มทั้งหมด         
 
                 //เงื่อนไขในการ query ข้อมูล หากมีข้อมูลเดียวทำเงื่อนไข1 หากมีหลายข้อมูลทำเงื่อนไขที่2
                 if (Object.keys(allValues).length === 1) {
                     let f = result.pop()
-                    if (req.body.type == 0) queryData(name1, "pray", sum, 0, res, f)
-                    else if (req.body.type == 1) queryData(name2, "praysunnah", sum, 0, res, f)
-                    else if (req.body.type == 2) queryData(name3, "ebadat", sum, 0, res, f)
+                    if (req.body.type == 0) queryData(name1, "pray", sum, 0, res,th, f)
+                    else if (req.body.type == 1) queryData(name2, "praysunnah", sum, 0, res,th, f)
+                    else if (req.body.type == 2) queryData(name3, "ebadat", sum, 0, res,th, f)
                 } else {
                     let f = result.shift()
                     let l = result.pop()
-                    if (req.body.type == 0) queryData(name1, "pray", sum, 1, res, f, l)
-                    else if (req.body.type == 1) queryData(name2, "praysunnah", sum, 1, res, f, l)
-                    else if (req.body.type == 2) queryData(name3, "ebadat", sum, 1, res, f, l)
+                    if (req.body.type == 0) queryData(name1, "pray", sum, 1, res,th, f, l)
+                    else if (req.body.type == 1) queryData(name2, "praysunnah", sum, 1, res,th, f, l)
+                    else if (req.body.type == 2) queryData(name3, "ebadat", sum, 1, res,th, f, l)
                 }
 
             })

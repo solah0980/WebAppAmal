@@ -12,12 +12,15 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item">
-                            <a class="nav-link" href="#">หน้าแรก</a>
+                           <router-link to="/"><a class="nav-link" href="#">หน้าแรก</a></router-link> 
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">ประเมิน</a>
+                            <router-link to="/check"><a class="nav-link" href="#">เช็คอามัล</a></router-link> 
                         </li>
                         <li class="nav-item">
+                            <router-link to="/analysis"><a class="nav-link" href="#">ประเมิน</a></router-link> 
+                        </li>
+                        <li class="nav-item" hidden>
                             <a class="nav-link" href="#">แก้ไขข้อมูล</a>
                         </li>
                         <li class="nav-item">
